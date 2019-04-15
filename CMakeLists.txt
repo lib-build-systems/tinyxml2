@@ -116,7 +116,7 @@ if(NOT TARGET uninstall)
 endif()
 
 include(CMakePackageConfigHelpers)
-set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
+set(TARGETS_EXPORT_NAME "${PROJECT_NAME}")
 configure_package_config_file(
   "Config.cmake.in"
   "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
@@ -126,5 +126,5 @@ install(FILES
         ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
-install(EXPORT ${CMAKE_PROJECT_NAME}Targets NAMESPACE tinyxml2::
+install(EXPORT ${CMAKE_PROJECT_NAME} NAMESPACE tinyxml2::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
