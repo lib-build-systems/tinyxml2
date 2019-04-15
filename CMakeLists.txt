@@ -51,9 +51,9 @@ set(CMAKE_DEBUG_POSTFIX "d")
 add_library(tinyxml2 tinyxml2.cpp tinyxml2.h)
 
 set_target_properties(tinyxml2 PROPERTIES
-        COMPILE_DEFINITIONS "TINYXML2_EXPORT"
-	VERSION "${GENERIC_LIB_VERSION}"
-	SOVERSION "${GENERIC_LIB_SOVERSION}")
+                                COMPILE_DEFINITIONS "TINYXML2_EXPORT"
+                                VERSION "${GENERIC_LIB_VERSION}"
+                                SOVERSION "${GENERIC_LIB_SOVERSION}")
 
 target_compile_definitions(tinyxml2 PUBLIC $<$<CONFIG:Debug>:TINYXML2_DEBUG>)
 
@@ -82,7 +82,7 @@ install(TARGETS tinyxml2
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(EXPORT tinyxml2 DESTINATION cmake)
+install(EXPORT tinyxml2 DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 if(BUILD_TESTING AND BUILD_TESTS)
   add_executable(xmltest xmltest.cpp)
@@ -99,7 +99,7 @@ if(BUILD_TESTING AND BUILD_TESTS)
   add_test(NAME xmltest COMMAND xmltest WORKING_DIRECTORY $<TARGET_FILE_DIR:xmltest>)
 endif()
 
-install(FILES tinyxml2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES tinyxml2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/tinyxml2)
 
 configure_file(tinyxml2.pc.in tinyxml2.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinyxml2.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
