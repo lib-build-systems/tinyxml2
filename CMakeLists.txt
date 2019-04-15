@@ -45,11 +45,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 add_library(tinyxml2 tinyxml2.cpp tinyxml2.h)
-
 set_target_properties(tinyxml2 PROPERTIES
                                 COMPILE_DEFINITIONS "TINYXML2_EXPORT"
                                 VERSION "${GENERIC_LIB_VERSION}"
@@ -58,9 +54,9 @@ set_target_properties(tinyxml2 PROPERTIES
 target_compile_definitions(tinyxml2 PUBLIC $<$<CONFIG:Debug>:TINYXML2_DEBUG>)
 
 if(DEFINED CMAKE_VERSION AND NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.11")
-    target_include_directories(tinyxml2 PUBLIC 
-                          $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+    target_include_directories(tinyxml2 
+                          PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+                          PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}>)
 
     if(MSVC)
       target_compile_definitions(tinyxml2 PUBLIC -D_CRT_SECURE_NO_WARNINGS)
