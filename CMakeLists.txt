@@ -1,17 +1,20 @@
-IF(BIICODE)
+if (BIICODE)
 	ADD_BIICODE_TARGETS()
-	if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+	if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 		file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    ENDIF()
-    RETURN()
-ENDIF(BIICODE)
+    endif ()
+    return()
+endif ()
+
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+
 cmake_policy(VERSION 2.6)
 if(POLICY CMP0063)
 	cmake_policy(SET CMP0063 OLD)
 endif()
 
 project(tinyxml2)
+
 include(GNUInstallDirs)
 include(CTest)
 #enable_testing()
@@ -47,80 +50,82 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 add_library(tinyxml2 tinyxml2.cpp tinyxml2.h)
 set_target_properties(tinyxml2 PROPERTIES
-                                COMPILE_DEFINITIONS "TINYXML2_EXPORT"
-                                VERSION "${GENERIC_LIB_VERSION}"
-                                SOVERSION "${GENERIC_LIB_SOVERSION}")
+                               COMPILE_DEFINITIONS "TINYXML2_EXPORT"
+                               VERSION "${GENERIC_LIB_VERSION}"
+                               SOVERSION "${GENERIC_LIB_SOVERSION}")
 
 target_compile_definitions(tinyxml2 PUBLIC $<$<CONFIG:Debug>:TINYXML2_DEBUG>)
 
-if(DEFINED CMAKE_VERSION AND NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.11")
+if (DEFINED CMAKE_VERSION AND NOT "${CMAKE_VERSION}" VERSION_LESS "2.8.11")
     target_include_directories(tinyxml2 
-                          PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
-                          PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}>)
+                               PRIVATE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+                               PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME}>)
 
-    if(MSVC)
+    if (MSVC)
       target_compile_definitions(tinyxml2 PUBLIC -D_CRT_SECURE_NO_WARNINGS)
-    endif(MSVC)
-else()
+    endif ()
+else ()
     include_directories(${PROJECT_SOURCE_DIR})
 
-    if(MSVC)
+    if (MSVC)
       add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    endif(MSVC)
-endif()
+    endif ()
+endif ()
 
 # export targets for find_package config mode
 export(TARGETS tinyxml2
-      FILE ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Targets.cmake)
+       FILE ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Targets.cmake)
 
 install(TARGETS tinyxml2
-        EXPORT tinyxml2
+        EXPORT tinyxml2-targets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(EXPORT tinyxml2 DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+install(EXPORT tinyxml2-targets
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
-if(BUILD_TESTING AND BUILD_TESTS)
-  add_executable(xmltest xmltest.cpp)
-  add_dependencies(xmltest tinyxml2)
-  target_link_libraries(xmltest tinyxml2)
+if (BUILD_TESTING AND BUILD_TESTS)
+    add_executable(xmltest xmltest.cpp)
+    add_dependencies(xmltest tinyxml2)
+    target_link_libraries(xmltest tinyxml2)
 
-  # Copy test resources and create test output directory
-  add_custom_command(TARGET xmltest POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:xmltest>/resources
-    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:xmltest>/resources/out
-    COMMENT "Configuring xmltest resources directory: ${CMAKE_CURRENT_BINARY_DIR}/resources"
-  )
+    # Copy test resources and create test output directory
+    add_custom_command(TARGET xmltest POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:xmltest>/resources
+                      COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:xmltest>/resources/out
+                      COMMENT "Configuring xmltest resources directory: ${CMAKE_CURRENT_BINARY_DIR}/resources"
+                      )
 
-  add_test(NAME xmltest COMMAND xmltest WORKING_DIRECTORY $<TARGET_FILE_DIR:xmltest>)
-endif()
+    add_test(NAME xmltest COMMAND xmltest WORKING_DIRECTORY $<TARGET_FILE_DIR:xmltest>)
+endif ()
 
-install(FILES tinyxml2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME})
+install(FILES tinyxml2.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_PROJECT_NAME})
 
 configure_file(tinyxml2.pc.in tinyxml2.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinyxml2.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinyxml2.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 # uninstall target
-if(NOT TARGET uninstall)
-  configure_file(
-      "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-      IMMEDIATE @ONLY)
+if (NOT TARGET uninstall)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+                   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+                   IMMEDIATE @ONLY)
 
-  add_custom_target(uninstall
-      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
-endif()
+    add_custom_target(uninstall
+                      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+endif ()
 
 include(CMakePackageConfigHelpers)
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}")
-configure_package_config_file(
-  "Config.cmake.in"
-  "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}"
-)
+configure_package_config_file("Config.cmake.in"
+                              "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+                              INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}"
+                             )
 install(FILES
         ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
-install(EXPORT ${CMAKE_PROJECT_NAME} NAMESPACE tinyxml2::
+install(EXPORT ${CMAKE_PROJECT_NAME}-targets
+        NAMESPACE tinyxml2::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
