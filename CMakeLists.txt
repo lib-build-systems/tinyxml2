@@ -74,6 +74,7 @@ endif ()
 
 # export targets for find_package config mode
 export(TARGETS tinyxml2
+       NAMESPACE tinyxml2::
        FILE ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Targets.cmake)
 
 install(TARGETS tinyxml2
@@ -82,6 +83,7 @@ install(TARGETS tinyxml2
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(EXPORT tinyxml2-targets
+        NAMESPACE tinyxml2::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME})
 
 if (BUILD_TESTING AND BUILD_TESTS)
