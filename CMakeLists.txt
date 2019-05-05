@@ -84,7 +84,7 @@ install(TARGETS tinyxml2
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(EXPORT tinyxml2-targets
         NAMESPACE tinyxml2::
-        DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}")
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
 
 if (BUILD_TESTING AND BUILD_TESTS)
     add_executable(xmltest xmltest.cpp)
@@ -106,7 +106,7 @@ install(FILES tinyxml2.h
 
 configure_file(tinyxml2.pc.in tinyxml2.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tinyxml2.pc
-        DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}")
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
 
 # uninstall target
 if (NOT TARGET uninstall)
@@ -122,12 +122,12 @@ include(CMakePackageConfigHelpers)
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}")
 configure_package_config_file("Config.cmake.in"
                               "${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-                              INSTALL_DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}"
+                              INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}"
                              )
 install(FILES
         ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake
-        DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}")
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
 
 install(EXPORT ${CMAKE_PROJECT_NAME}-targets
         NAMESPACE tinyxml2::
-        DESTINATION "lib/cmake/${CMAKE_PROJECT_NAME}")
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}")
